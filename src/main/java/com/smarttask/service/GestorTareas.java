@@ -15,12 +15,18 @@ public class GestorTareas implements Accionable {
 
     @Override
     public boolean agregar(String nombre, int prioridad, boolean urgente) {
-        int id = nextId++;
-        Tarea nueva = urgente
-                ? new TareaUrgente(id, nombre, prioridad)
-                : new TareaNormal(id, nombre, prioridad);
-        tareas.add(nueva);
-        return urgente;
+        try {
+            int id = nextId; // aún NO aumentamos
+            Tarea nueva = urgente
+                    ? new TareaUrgente(id, nombre, prioridad)
+                    : new TareaNormal(id, nombre, prioridad);
+
+            tareas.add(nueva);
+            nextId++; // recién aquí, porque fue exitosa
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public List<Tarea> listarTodas() {
